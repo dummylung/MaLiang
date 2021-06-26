@@ -14,22 +14,6 @@ internal let sharedDevice = MTLCreateSystemDefaultDevice()
 
 open class MetalView: MTKView {
     
-    // MARK: - Brush Textures
-    
-    func makeTexture(with data: Data, id: String? = nil) throws -> MLTexture {
-        guard metalAvaliable else {
-            throw MLError.simulatorUnsupported
-        }
-        let textureLoader = MTKTextureLoader(device: device!)
-        let texture = try textureLoader.newTexture(data: data, options: [.SRGB : false])
-        return MLTexture(id: id ?? UUID().uuidString, texture: texture)
-    }
-    
-    func makeTexture(with file: URL, id: String? = nil) throws -> MLTexture {
-        let data = try Data(contentsOf: file)
-        return try makeTexture(with: data, id: id)
-    }
-    
     // MARK: - Functions
     // Erases the screen, redisplay the buffer if display sets to true
     open func clear(display: Bool = true) {

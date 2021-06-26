@@ -46,7 +46,7 @@ open class ChartletBrush: Printer {
             guard let data = image.pngData() else {
                 throw MLError.convertPNGDataFailed
             }
-            let texture = try target.makeTexture(with: data)
+            let texture = try TextureCache.shared.makeTexture(with: data)
             return texture.id
         }
         var id: String?
@@ -59,10 +59,9 @@ open class ChartletBrush: Printer {
         self.renderStyle = renderStyle
     }
     
-    required public init(name: String?, textureID: String?, target: Canvas) {
+    required public init(name: String?, textureID: String?, target: Canvas? = nil) {
         super.init(name: name, textureID: textureID, target: target)
         opacity = 1
-        target.register(brush: self)
     }
     
     private var lastTextureIndex = 0

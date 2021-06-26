@@ -19,7 +19,7 @@ open class DataExporter {
         content = CanvasContent(size: canvas.size,
                                 lineStrips: data?.elements.compactMap { $0 as? LineStrip } ?? [],
                                 chartlets: data?.elements.compactMap { $0 as? Chartlet } ?? [])
-        textures = canvas.textures
+        textures = TextureCache.shared.textures
     }
     
     private var content: CanvasContent

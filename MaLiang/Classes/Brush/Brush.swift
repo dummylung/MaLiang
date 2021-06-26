@@ -44,7 +44,11 @@ open class Brush {
     open private(set) var textureID: String?
     
     /// target to draw
-    open weak var target: Canvas?
+    open weak var target: Canvas? {
+        didSet {
+            updatePointPipeline()
+        }
+    }
 
     // opacity of texture, affects the darkness of stroke
     open var opacity: CGFloat = 0.3 {
@@ -101,12 +105,12 @@ open class Brush {
     
     // designed initializer, will be called by target when reigster called
     // identifier is not necessary if you won't save the content of your canvas to file
-    required public init(name: String?, textureID: String?, target: Canvas) {
+    required public init(name: String?, textureID: String?, target: Canvas? = nil) {
         self.name = name ?? UUID().uuidString
         self.target = target
         self.textureID = textureID
         if let id = textureID {
-            texture = target.findTexture(by: id)?.texture
+            texture = TextureCache.shared.findTexture(by: id)?.texture
         }
         updatePointPipeline()
     }

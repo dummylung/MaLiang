@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 open class Canvas: MetalView {
     
     // MARK: - Brushes
@@ -48,81 +49,10 @@ open class Canvas: MetalView {
         actionObservers.addObserver(observer)
     }
     
-    /// Register a brush with image data
-    ///
-    /// - Parameter texture: texture data of brush
-    /// - Returns: registered brush
-    @discardableResult open func registerBrush<T: Brush>(name: String? = nil, from data: Data) throws -> T {
-        let texture = try makeTexture(with: data)
-        let brush = T(name: name, textureID: texture.id, target: self)
-        registeredBrushes.append(brush)
-        return brush
-    }
-    
-    /// Register a brush with image data
-    ///
-    /// - Parameter file: texture file of brush
-    /// - Returns: registered brush
-    @discardableResult open func registerBrush<T: Brush>(name: String? = nil, from file: URL) throws -> T {
-        let data = try Data(contentsOf: file)
-        return try registerBrush(name: name, from: data)
-    }
-    
-    /// Register a new brush with texture already registered on this canvas
-    ///
-    /// - Parameter textureID: id of a texture, default round texture will be used if sets to nil or texture id not found
-    open func registerBrush<T: Brush>(name: String? = nil, textureID: String? = nil) throws -> T {
-        let brush = T(name: name, textureID: textureID, target: self)
-        registeredBrushes.append(brush)
-        return brush
-    }
-    
-    /// Reigster an already initialized Brush to this Canvas
-    /// - Parameter brush: Brush already initialized
-    
-    open func register<T: Brush>(brush: T) {
-        brush.target = self
-        registeredBrushes.append(brush)
-    }
-    
     /// current brush used to draw
     /// only registered brushed can be set to current
     /// get a brush from registeredBrushes and call it's use() method to make it current
     open internal(set) var currentBrush: Brush!
-    
-    /// All registered brushes
-    open private(set) var registeredBrushes: [Brush] = []
-    
-    /// find a brush by name
-    /// nill will be retured if brush of name provided not exists
-    open func findBrushBy(name: String?) -> Brush? {
-        return registeredBrushes.first { $0.name == name }
-    }
-    
-    /// All textures created by this canvas
-    open private(set) var textures: [MLTexture] = []
-    
-    /// make texture and cache it with ID
-    ///
-    /// - Parameters:
-    ///   - data: image data of texture
-    ///   - id: id of texture, will be generated if not provided
-    /// - Returns: created texture, if the id provided is already exists, the existing texture will be returend
-    @discardableResult
-    override open func makeTexture(with data: Data, id: String? = nil) throws -> MLTexture {
-        // if id is set, make sure this id is not already exists
-        if let id = id, let exists = findTexture(by: id) {
-            return exists
-        }
-        let texture = try super.makeTexture(with: data, id: id)
-        textures.append(texture)
-        return texture
-    }
-    
-    /// find texture by textureID
-    open func findTexture(by id: String) -> MLTexture? {
-        return textures.first { $0.id == id }
-    }
     
     @available(*, deprecated, message: "this property will be removed soon, set the property forceSensitive on brush to 0 instead, changing this value will cause no affects")
     open var forceEnabled: Bool = true
