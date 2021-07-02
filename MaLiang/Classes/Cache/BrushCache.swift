@@ -23,9 +23,14 @@ class BrushCache {
     ///
     /// - Parameter texture: texture data of brush
     /// - Returns: registered brush
-    @discardableResult open func registerBrush<T: Brush>(name: String? = nil, from data: Data) throws -> T {
+    @discardableResult open func registerBrush(brushClass: Brush.Type?, name: String? = nil, from data: Data) throws -> Brush {
         let texture = try TextureCache.shared.makeTexture(with: data)
-        let brush = T(name: name, textureID: texture.id)
+        var brush: Brush!
+        if let brushClass = brushClass {
+            brush = brushClass.init(name: name, textureID: texture.id)
+        } else {
+            brush = Brush(name: name, textureID: texture.id)
+        }
         registeredBrushes.append(brush)
         return brush
     }
@@ -34,27 +39,27 @@ class BrushCache {
     ///
     /// - Parameter file: texture file of brush
     /// - Returns: registered brush
-    @discardableResult open func registerBrush<T: Brush>(name: String? = nil, from file: URL) throws -> T {
-        let data = try Data(contentsOf: file)
-        return try registerBrush(name: name, from: data)
-    }
+//    @discardableResult open func registerBrush<T: Brush>(name: String? = nil, from file: URL) throws -> T {
+//        let data = try Data(contentsOf: file)
+//        return try registerBrush(name: name, from: data)
+//    }
     
     /// Register a new brush with texture already registered on this canvas
     ///
     /// - Parameter textureID: id of a texture, default round texture will be used if sets to nil or texture id not found
-    open func registerBrush<T: Brush>(name: String? = nil, textureID: String? = nil) throws -> T {
-        let brush = T(name: name, textureID: textureID)
-        registeredBrushes.append(brush)
-        return brush
-    }
+//    open func registerBrush<T: Brush>(name: String? = nil, textureID: String? = nil) throws -> T {
+//        let brush = T(name: name, textureID: textureID)
+//        registeredBrushes.append(brush)
+//        return brush
+//    }
     
     /// Reigster an already initialized Brush to this Canvas
     /// - Parameter brush: Brush already initialized
     
-    open func register<T: Brush>(brush: T) {
-//        brush.target = self
-        registeredBrushes.append(brush)
-    }
+//    open func register<T: Brush>(brush: T) {
+////        brush.target = self
+//        registeredBrushes.append(brush)
+//    }
     
     /// find a brush by name
     /// nill will be retured if brush of name provided not exists

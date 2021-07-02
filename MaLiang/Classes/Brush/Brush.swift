@@ -103,6 +103,12 @@ open class Brush {
         renderingColor = color.toMLColor(opacity: opacity)
     }
     
+    open var isEraser: Bool = false {
+        didSet {
+            updatePointPipeline()
+        }
+    }
+    
     // designed initializer, will be called by target when reigster called
     // identifier is not necessary if you won't save the content of your canvas to file
     required public init(name: String?, textureID: String?, target: Canvas? = nil) {
@@ -188,15 +194,23 @@ open class Brush {
     
     /// Blending options for this brush, overrides to implement your own blending options
     open func setupBlendOptions(for attachment: MTLRenderPipelineColorAttachmentDescriptor) {
-        attachment.isBlendingEnabled = true
-
-        attachment.rgbBlendOperation = .add
-        attachment.sourceRGBBlendFactor = .sourceAlpha
-        attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
-        
-        attachment.alphaBlendOperation = .add
-        attachment.sourceAlphaBlendFactor = .one
-        attachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        if isEraser {
+            attachment.isBlendingEnabled = true
+            attachment.alphaBlendOperation = .reverseSubtract
+            attachment.rgbBlendOperation = .reverseSubtract
+            attachment.sourceRGBBlendFactor = .zero
+            attachment.sourceAlphaBlendFactor = .one
+            attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+            attachment.destinationAlphaBlendFactor = .one
+        } else {
+            attachment.isBlendingEnabled = true
+            attachment.rgbBlendOperation = .add
+            attachment.sourceRGBBlendFactor = .sourceAlpha
+            attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
+            attachment.alphaBlendOperation = .add
+            attachment.sourceAlphaBlendFactor = .one
+            attachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        }
     }
     
     // MARK: - Render Actions

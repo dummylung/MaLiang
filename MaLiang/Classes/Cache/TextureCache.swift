@@ -47,9 +47,9 @@ class TextureCache {
         return textures.first { $0.id == id }
     }
     
-    func makeTexture(with file: URL, id: String? = nil) throws -> MLTexture {
-        let data = try Data(contentsOf: file)
-        return try makeTexture(with: data, id: id)
-    }
+//    func makeTexture(with file: URL, id: String? = nil) throws -> MLTexture {
+//        let data = try Data(contentsOf: file)
+//        return try makeTexture(with: data, id: id)
+//    }
     
 }
