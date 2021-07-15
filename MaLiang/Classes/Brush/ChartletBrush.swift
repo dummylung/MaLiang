@@ -35,21 +35,12 @@ open class ChartletBrush: Printer {
     
     convenience public init(
         name: String?,
-        imageNames: [String],
+        textures: [MLTexture],
         renderStyle: RenderStyle = .ordered,
-        target: Canvas
-    ) throws {
-        let textureIDs = try imageNames.compactMap { name -> String in
-            guard let image = UIImage(named: name) else {
-                throw MLError.imageNotExists(name)
-            }
-            guard let data = image.pngData() else {
-                throw MLError.convertPNGDataFailed
-            }
-            let texture = try TextureCache.shared.makeTexture(with: data)
-            return texture.id
-        }
+        target: Canvas? = nil
+    ) {
         var id: String?
+        let textureIDs = textures.map { $0.id }
         switch renderStyle {
         case .ordered: id = textureIDs[0]
         case .random: id = textureIDs.randomElement()

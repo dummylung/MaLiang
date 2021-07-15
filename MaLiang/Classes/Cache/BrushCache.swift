@@ -35,6 +35,23 @@ class BrushCache {
         return brush
     }
     
+    @discardableResult open func registerChartletBrush(name: String? = nil, datas: [Data]) throws -> Brush {
+//        let textureIDs = try imageNames.compactMap { name -> String in
+//            guard let image = UIImage(named: name) else {
+//                throw MLError.imageNotExists(name)
+//            }
+//            guard let data = image.pngData() else {
+//                throw MLError.convertPNGDataFailed
+//            }
+//            let texture = try TextureCache.shared.makeTexture(with: data)
+//            return texture.id
+//        }
+        let textures = try datas.compactMap { try TextureCache.shared.makeTexture(with: $0) }
+        let brush = ChartletBrush(name: name, textures: textures, renderStyle: .ordered, target: nil)
+        registeredBrushes.append(brush)
+        return brush
+    }
+    
     /// Register a brush with image data
     ///
     /// - Parameter file: texture file of brush
