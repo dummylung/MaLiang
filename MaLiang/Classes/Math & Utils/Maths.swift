@@ -109,7 +109,7 @@ extension CGPoint {
         return sqrt(p)
     }
     
-    func angel(to other: CGPoint = .zero) -> CGFloat {
+    func angle(to other: CGPoint = .zero) -> CGFloat {
         let point = self - other        
         if y == 0 {
             return x >= 0 ? 0 : CGFloat.pi

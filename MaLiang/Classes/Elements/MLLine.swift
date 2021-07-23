@@ -32,7 +32,7 @@ public struct MLLine: Codable {
     }
     
     public var angle: CGFloat {
-        return end.angel(to: begin)
+        return end.angle(to: begin)
     }
     
     // MARK: - Codable
