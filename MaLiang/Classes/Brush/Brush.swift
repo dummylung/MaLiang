@@ -36,6 +36,8 @@ public struct Pan {
 
 open class Brush {
     
+    private var counter: Int = 0
+    
     // unique identifier for a specifyed brush, should not be changed over all your apps
     // make this value uniform when saving or reading canvas content from a file
     open var name: String
@@ -73,7 +75,7 @@ open class Brush {
     open var scaleWithCanvas = false
     
     // force used when tap the canvas, defaults to 0.1
-    open var forceOnTap: CGFloat = 1
+    open var forceOnTap: CGFloat = 0.1
     
     /// color of stroke
     open var color: UIColor = .black {
@@ -279,6 +281,9 @@ open class Brush {
         guard vertices.count >= 2 else {
             return
         }
+        if counter < 3 {
+            return
+        }
         var lastPan = lastRenderedPan ?? Pan(point: vertices[0], force: force)
         let deltaForce = (force - (lastRenderedPan?.force ?? force)) / CGFloat(vertices.count)
         for i in 1 ..< vertices.count {
@@ -309,7 +314,9 @@ open class Brush {
 
     // called when touches began event triggered on canvas
     open func renderBegan(from pan: Pan, on canvas: Canvas) -> Bool {
-        lastRenderedPan = pan
+        counter = 0
+        
+//        lastRenderedPan = pan
         bezierGenerator.begin(with: pan.point)
         pushPoint(pan.point, to: bezierGenerator, force: pan.force, on: canvas)
         return true
@@ -317,6 +324,7 @@ open class Brush {
     
     // called when touches moved event triggered on canvas
     open func renderMoved(to pan: Pan, on canvas: Canvas) -> Bool {
+        counter += 1
         guard bezierGenerator.points.count > 0 else { return false }
         guard pan.point != lastRenderedPan?.point else {
             return false
@@ -330,6 +338,7 @@ open class Brush {
         defer {
             bezierGenerator.finish()
             lastRenderedPan = nil
+            counter = 0
         }
         
         let count = bezierGenerator.points.count
