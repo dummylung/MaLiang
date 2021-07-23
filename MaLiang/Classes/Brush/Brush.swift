@@ -198,19 +198,25 @@ open class Brush {
     open func setupBlendOptions(for attachment: MTLRenderPipelineColorAttachmentDescriptor) {
         if isEraser {
             attachment.isBlendingEnabled = true
-            attachment.alphaBlendOperation = .reverseSubtract
+            
             attachment.rgbBlendOperation = .reverseSubtract
+            attachment.alphaBlendOperation = .reverseSubtract
+            
             attachment.sourceRGBBlendFactor = .zero
             attachment.sourceAlphaBlendFactor = .one
+            
             attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
             attachment.destinationAlphaBlendFactor = .one
         } else {
             attachment.isBlendingEnabled = true
+            
             attachment.rgbBlendOperation = .add
-            attachment.sourceRGBBlendFactor = .sourceAlpha
-            attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
             attachment.alphaBlendOperation = .add
+            
+            attachment.sourceRGBBlendFactor = .sourceAlpha
             attachment.sourceAlphaBlendFactor = .one
+            
+            attachment.destinationRGBBlendFactor = .oneMinusSourceAlpha
             attachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
         }
     }
